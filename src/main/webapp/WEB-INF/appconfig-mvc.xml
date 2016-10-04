@@ -1,0 +1,36 @@
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <!-- Конфигурация Spring -->
+    <!-- Путь, в котором находятся статические ресурсы -->
+    <mvc:resources mapping="/**" location="/"/>
+
+
+    <!-- Для описания сущностей MVC будут использоваться аннотации-->
+    <mvc:annotation-driven/>
+
+
+<!-- Прописывается файл с подсказками при регистрации -->
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="defaultEncoding" value="UTF-8" />
+        <property name="basenames">
+            <list>
+                <value>classpath:validation</value>
+            </list>
+        </property>
+    </bean>
+
+
+    <!-- Настройка получения логического имени вида строки -->
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!-- Добавляем префикс к возвращаемому значению -->
+        <property name="prefix" value="/" />
+        <!-- Добавляем суффикс к возвращаемому значению -->
+        <property name="suffix" value=".jsp"/>
+    </bean>
+</beans>

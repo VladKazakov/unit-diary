@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Полные адреса документов с описанием пространства имен -->
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- Пути к файлам конфигураций -->
+    <import resource="appconfig-mvc.xml"/>
+    <import resource="appconfig-data.xml"/>
+    <import resource="appconfig-security.xml"/>
+
+    <!-- Путь, указывает на пакеты, которые нужно отсканировать на наличие аннотаций -->
+    <context:component-scan base-package="com.*"/>
+
+    <!-- Путь к описанию подключения к базе данных.  -->
+    <!--<context:property-placeholder location="classpath:database.properties"/>-->
+
+</beans>

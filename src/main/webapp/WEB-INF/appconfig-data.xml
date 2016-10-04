@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Полные адреса документов с описанием пространства имен -->
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/data/jpa
+    http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+
+    <!-- Подключение к базе данных -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="url" value="jdbc:postgresql://localhost:5432/diary"/>
+        <property name="username" value="postgres"/>
+        <property name="password" value="123456"/>
+
+    </bean>
+    <!--<bean id="persistenceProvider" class="org.hibernate.ejb.HibernatePersistence"/>-->
+    <!-- Настройка параметров менеджера сущностей -->
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <!-- Источник данных (подключение к БД) -->
+        <property name="dataSource" ref="dataSource"/>
+
+        <!-- Пакеты, в которых будет осуществлён поиск классов с описанием сущностей -->
+        <property name="packagesToScan" value="com.model"/>
+
+        <!--УДАЛИТЬ. Диалект SQL. Hibernate сам может определить его-->
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQL82Dialect</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>
+            </props>
+        </property>
+
+        <!-- Адаптер поставщика -->
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
+        </property>
+    </bean>
+
+    <!-- Настройка менеджера транзакций. Используется для возможности вностиь изменения данных в БД -->
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <!-- Указывает, что для описания сущностей MVC будут использоваться аннотации -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!-- Путь, где хранятся репозиторные интерфейсы -->
+    <jpa:repositories base-package="com.*"/>
+
+    <!--ДОБАВИТЬ ОПИСАНИЕ-->
+    <bean name="diaryDao" class="com.dao.DiaryDaoImpl">
+    </bean>
+
+    <bean name="DiaryService" class="com.service.DiaryServiceImpl">
+        <property name="diaryDao" ref="diaryDao">
+        </property>
+    </bean>
+
+</beans>
